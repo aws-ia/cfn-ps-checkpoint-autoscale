@@ -1,5 +1,5 @@
 project:
-  name: quickstart-checkpoint-autoscale
+  name: cfn-ps-checkpoint-autoscale
   owner: quickstart-eng@amazon.com
   package_lambda: false
   parameters:
