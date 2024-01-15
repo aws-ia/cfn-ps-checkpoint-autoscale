@@ -2,5 +2,44 @@
 
 For troubleshooting common Partner Solution issues, refer to the https://fwd.aws/rA69w?[AWS Partner Solution General Information Guide^] and https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html[Troubleshooting CloudFormation^].
 
-// == Resources
-// Uncomment section and add links to any external resources that are specified by the partner.
+== FAQ
+
+=== How can I use this deployment to protect an existing workload of web servers?
+
+You can place an existing workload of web servers, or manually deploy a new workload, behind the CloudGuard Auto Scaling group of Security Gateways. To do so, follow these steps:
+
+1. Select *No* for the *Deploy Servers* parameter when launching.
+2. Place the web server workload in private subnets.
+3. Create an internal load balancer that listens to the internal port, as specified in the CloudFormation stack *Outputs* tab.
+4. Attach the load balancer’s target group to the web server workload.
+5. Tag the internal load balancer as described in the section https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk112575#Adding%20tags%20to%20your%20Internal%20Elastic%20Load%20Balancer[Adding tags to your Internal Elastic Load Balancer] in Check Point’s CloudGuard Auto Scaling for AWS documentation. The values required to complete this step are described in the CloudFormation stack Outputs tab, if you have chosen to deploy a Security Management Server. Otherwise, you can determine these values when you configure the Management Server, as described in the section https://supportcenter.us.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk112575#Installing%20and%20configuring%20the%20Check%20Point%20Security%20Management%20Server[Installing and configuring the Check Point Security Management Server] in Check Point’s _CloudGuard Auto Scaling for AWS_ documentation.
+
+[NOTE]
+====
+It is also possible to have the web servers workload deployed in a different AWS account. See the section https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk130372#Connecting%20with%20Additional%20AWS%20accounts[Connecting with Additional AWS accounts] in Check Point’s _Security Management Server with CloudGuard for AWS_ documentation.
+====
+
+=== How do I manually deploy a Check Point Security Management Server to manage the CloudGuard Security Gateways?
+
+Choose *No* for the Deploy Management Server parameter during deployment, and follow the steps described in the Check Point Security Management Server section.
+
+=== How do I configure an existing Check Point Security Management Server to manage the CloudGuard Security Gateways?
+
+Choose *No* for the *Deploy Management Server* parameter during deployment, and follow the steps described in the Check Point Security Management Server section.
+
+=== How do I enable additional Software Blades or disable active ones?
+
+See the section https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk130372#Enabling%20and%20disabling%20Software%20Blades[Enabling and disabling Software Blades] in Check Point’s _Security
+Management Server with CloudGuard for AWS_ documentation.
+
+
+== Resources
+
+* CloudGuard Auto Scaling for AWS https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso
+lutiondetails=&solutionid=sk112575
+* Security Management Server with CloudGuard for AWS https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso
+lutiondetails=&solutionid=sk130372
+* AWS CloudFormation Templates https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso
+lutiondetails=&solutionid=sk111013
+* Configuration of AWS STS to Delegate Access across two AWS accounts https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk122074
+* Secure Cloud Blueprint: Agile Security Architecture for the Cloud https://pages.checkpoint.com/secure-cloud-blueprint.html

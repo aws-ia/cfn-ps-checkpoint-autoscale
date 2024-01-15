@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="generator" content="Asciidoctor 2.0.16">
 <meta name="description" content="Check Point CloudGuard Auto Scaling Deployment Guide on AWS">
 <meta name="keywords" content="Partner Solution, AWS, Check Point CloudGuard Auto Scaling">
 <title>Check Point CloudGuard Auto Scaling on AWS</title>
@@ -854,14 +854,37 @@ p.footer-text a{color:#d7d8d8}
 <div id="toc" class="toc2">
 <div id="toctitle"></div>
 <ul class="sectlevel1">
-<li><a href="#_overview">Overview</a></li>
+<li><a href="#_overview">Overview</a>
+<ul class="sectlevel2">
+<li><a href="#_check_point_cloudguard_for_aws">Check Point CloudGuard for AWS</a></li>
+</ul>
+</li>
 <li><a href="#_costs_and_licenses">Costs and licenses</a></li>
 <li><a href="#_architecture">Architecture</a></li>
 <li><a href="#_deployment_options">Deployment options</a></li>
-<li><a href="#_predeployment_steps">Predeployment steps</a></li>
+<li><a href="#_predeployment_steps">Predeployment steps</a>
+<ul class="sectlevel2">
+<li><a href="#_subscribe_to_check_point_cloudguard_iaas">Subscribe to Check Point CloudGuard IaaS</a></li>
+</ul>
+</li>
 <li><a href="#_deployment_steps">Deployment steps</a></li>
-<li><a href="#_postdeployment_steps">Postdeployment steps</a></li>
+<li><a href="#_postdeployment_steps">Postdeployment steps</a>
+<ul class="sectlevel2">
+<li><a href="#_test_the_deployment">Test the deployment</a></li>
+<li><a href="#_check_point_security_management_server">Check Point Security Management Server</a></li>
+<li><a href="#_web_servers_workload">Web Servers Workload</a></li>
+</ul>
+</li>
 <li><a href="#_troubleshooting">Troubleshooting</a></li>
+<li><a href="#_faq">FAQ</a>
+<ul class="sectlevel2">
+<li><a href="#_how_can_i_use_this_deployment_to_protect_an_existing_workload_of_web_servers">How can I use this deployment to protect an existing workload of web servers?</a></li>
+<li><a href="#_how_do_i_manually_deploy_a_check_point_security_management_server_to_manage_the_cloudguard_security_gateways">How do I manually deploy a Check Point Security Management Server to manage the CloudGuard Security Gateways?</a></li>
+<li><a href="#_how_do_i_configure_an_existing_check_point_security_management_server_to_manage_the_cloudguard_security_gateways">How do I configure an existing Check Point Security Management Server to manage the CloudGuard Security Gateways?</a></li>
+<li><a href="#_how_do_i_enable_additional_software_blades_or_disable_active_ones">How do I enable additional Software Blades or disable active ones?</a></li>
+</ul>
+</li>
+<li><a href="#_resources">Resources</a></li>
 <li><a href="#_customer_responsibility">Customer responsibility</a></li>
 <li><a href="#_feedback">Feedback</a></li>
 <li><a href="#_notices">Notices</a></li>
@@ -909,7 +932,38 @@ Refer to the <a href="https://github.com/aws-ia/cfn-ps-checkpoint-autoscale" tar
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide covers the information you need to deploy the Check Point CloudGuard Auto Scaling Partner Solution in the AWS Cloud.</p>
+<p>This reference deployment guide provides step-by-step instructions for deploying a web service secured by an Auto Scaling group of Check Point CloudGuard Security Gateways on the AWS Cloud.</p>
+</div>
+<div class="paragraph">
+<p>AWS Auto Scaling monitors your applications and automatically adjusts capacity to maintain steady, predictable performance at the lowest possible cost. For example, a web application might be served by multiple web servers that are deployed across multiple Availability Zones.</p>
+</div>
+<div class="paragraph">
+<p>This deployment is for users who want to publish an automatically scaled and dynamically secured web service on AWS, defining content-level access policy, monitoring incoming requests to the service, applying intrusion prevention system (IPS) protections for web
+servers, enforcing geo-based policy, preventing malicious bots activity, and more.</p>
+</div>
+<div class="paragraph">
+<p>The deployment deploys an Auto Scaling group of Check Point CloudGuard Security Gateways in front of a workload of web servers, because a security solution should be as scalable as the setup it is protecting. Additionally, you can select to deploy either an external Application Load Balancer that operates at the application layer, or a Network Load Balancer that operates at the transport layer, to route traffic from the internet to the Security Gateways.</p>
+</div>
+<div class="paragraph">
+<p>To manage the CloudGuard Security Gateways, you can choose to deploy a preconfigured Check Point CloudGuard Security Management Server, use an existing Security Management Server, or deploy one later.</p>
+</div>
+<div class="paragraph">
+<p>If you choose to deploy your workload of web servers, this deployment will also include an internal Application Load Balancer, to route traffic from the Security Gateways to your workload. Otherwise, you can use existing internal load balancers, or deploy those later, by
+tagging them in the AWS Management Console.</p>
+</div>
+<div class="sect2">
+<h3 id="_check_point_cloudguard_for_aws">Check Point CloudGuard for AWS</h3>
+<div class="paragraph">
+<p>Check Point CloudGuard for AWS extends comprehensive threat prevention security to the AWS Cloud. It protects assets in the cloud from attacks while enabling secure connectivity.</p>
+</div>
+<div class="paragraph">
+<p>CloudGuard lets you enforce consistent security policies across your entire organization by protecting data between the corporate network and your virtual private cloud (VPC). CloudGuard can also inspect data entering and leaving the private subnet in the VPC to
+prevent attacks and to mitigate data loss or leakage.</p>
+</div>
+<div class="paragraph">
+<p>Check Point CloudGuard for AWS meets an organization’s cloud security needs with flexible and manageable security options, including Firewall, Intrusion Prevention System (IPS), Application Control, Antivirus, Anti-Bot, URL filtering, Identity Awareness, advanced
+Threat Prevention, and Threat Extraction Software for known threats and zero-day attacks. CloudGuard protects services in the public cloud from the most sophisticated threats and from unauthorized access while preventing application layer denial-of-service attacks.</p>
+</div>
 </div>
 </div>
 </div>
@@ -918,6 +972,15 @@ Refer to the <a href="https://github.com/aws-ia/cfn-ps-checkpoint-autoscale" tar
 <div class="sectionbody">
 <div class="paragraph">
 <p>There is no cost to use this Partner Solution, but you will be billed for any AWS services or resources that this Partner Solution deploys. For more information, refer to the <a href="https://fwd.aws/rA69w?" target="_blank" rel="noopener">AWS Partner Solution General Information Guide</a>.</p>
+</div>
+<div class="paragraph">
+<p>The Check Point CloudGuard Security Gateways, which are launched by the Auto Scaling group, and the optional Check Point CloudGuard Security Management Server, require a license.</p>
+</div>
+<div class="paragraph">
+<p>Because this deployment uses Amazon Machine Images (AMIs) from AWS Marketplace, you must subscribe to Check Point CloudGuard in AWS Marketplace before you launch. There are two licensing options: Pay As You Go (PAYG) and Bring Your Own License (BYOL). See the predeployment steps deployment section for details and links.</p>
+</div>
+<div class="paragraph">
+<p>To purchase BYOL licenses, contact <a href="https://www.checkpoint.com/contact-sales/">Check Point Sales</a>. If you already have a BYOL license and you’d like to use it for this deployment, visit the <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk112575#Licensing">Licensing section</a> of Check Point’s CloudGuard Auto Scaling in AWS documentation.</p>
 </div>
 </div>
 </div>
@@ -947,35 +1010,37 @@ AWS Cloud.</p>
 best practices, to provide you with your own virtual network on AWS.*</p>
 </li>
 <li>
-<p>In the public subnets:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Managed network address translation (NAT) gateways to allow outbound
-internet access for resources in the private subnets.*</p>
-</li>
-<li>
-<p>A Linux bastion host in an Auto Scaling group to allow inbound Secure
-Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.*</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
 <p>In the private subnets:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>&lt;item&gt;.</p>
+<p>CloudGuard Security Gateways in an Auto Scaling group.</p>
 </li>
 <li>
-<p>&lt;item&gt;.</p>
+<p>Either an external Application Load Balancer that operates at the application layer or a Network Load Balancer that operates at the transport level, to route traffic from the internet to the CloudGuard Security Gateways.</p>
+</li>
+<li>
+<p>An optional Auto Scaling group of web servers.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you choose to deploy your workload of web servers, an internal Application Load Balancer, to route traffic from the Security Gateways to your workload.</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>&lt;describe any additional components&gt;.</p>
+<p>In the public subnets:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>An optional, preconfigured CloudGuard Security Management Server, to manage the Security Gateways.</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -993,10 +1058,10 @@ Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in pub
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://qs_launch_permalink" target="_blank" rel="noopener">Deploy CloudGuard into a new VPC</a>. This option builds a new AWS environment that consists of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys CloudGuard into this new VPC.</p>
+<p><a href="https://fwd.aws/5Q6kM?" target="_blank" rel="noopener">Deploy CloudGuard into a new VPC</a>. This option builds a new AWS environment that consists of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys CloudGuard into this new VPC.</p>
 </li>
 <li>
-<p><a href="https://qs_launch_permalink" target="_blank" rel="noopener">Deploy CloudGuard into an existing VPC</a>. This option provisions CloudGuard in your existing AWS infrastructure.</p>
+<p><a href="https://fwd.aws/7a9rD?" target="_blank" rel="noopener">Deploy CloudGuard into an existing VPC</a>. This option provisions CloudGuard in your existing AWS infrastructure.</p>
 </li>
 </ul>
 </div>
@@ -1008,7 +1073,69 @@ Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in pub
 <div class="sect1">
 <h2 id="_predeployment_steps">Predeployment steps</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_subscribe_to_check_point_cloudguard_iaas">Subscribe to Check Point CloudGuard IaaS</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to AWS Marketplace at <a href="https://aws.amazon.com/marketplace" class="bare">https://aws.amazon.com/marketplace</a>.</p>
+</li>
+<li>
+<p>Open the page for one of the following licensing options for Check Point CloudGuard Security Gateway:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://aws.amazon.com/marketplace/pp/B07LB3YN9P">CloudGuard IaaS Next-Gen Firewall w. Threat Prevention &amp; SandBlast - BYOL</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/marketplace/pp/B07LB6847X">CloudGuard IaaS Next-Gen Firewall with Threat Prevention - PAYG-NGTP</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/marketplace/pp/B07LB54LFB">CloudGuard IaaS Next-Gen Firewall with Threat Prevention and SandBlast - PAYG-NGTX</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>Choose <strong>Continue to Subscribe</strong>.</p>
+</li>
+<li>
+<p>Choose <strong>Accept Terms</strong> to confirm your acceptance of the AWS Marketplace license agreement.</p>
+</li>
+<li>
+<p>If you want to deploy a Check Point CloudGuard Security Management Server, open the AWS Marketplace page for one of the following licensing options, and repeat steps 3 and 4:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://aws.amazon.com/marketplace/pp/B07KSBV1MM">CloudGuard IaaS Security Management - BYOL</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/marketplace/pp/B07KSBM119">CloudGuard IaaS Security Management for 25 Security Gateways - PAYG-MGMT</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you want to manage more than 25 Security Gateways, either in the Auto Scaling group deployed here or in another environment, select the BYOL option and purchase a license. To purchase BYOL licenses, contact <a href="https://www.checkpoint.com/contact-sales/">Check Point Sales</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1062,7 +1189,69 @@ Unless you&#8217;re customizing the Partner Solution templates or are instructed
 <div class="sect1">
 <h2 id="_postdeployment_steps">Postdeployment steps</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_test_the_deployment">Test the deployment</h3>
+<div class="paragraph">
+<p>To test the deployment, verify that the protected web service is accessible via the external Application or Network Load Balancer DNS address, as specified in the CloudFormation stack <strong>Outputs</strong> tab.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_check_point_security_management_server">Check Point Security Management Server</h3>
+<div class="paragraph">
+<p>The CloudGuard Security Gateways are automatically managed by a Check Point Security Management Server that can be deployed either on AWS or on premises.</p>
+</div>
+<div class="paragraph">
+<p>During scale-out events, in which new Security Gateway instances are launched to meet an increase in current load, the Security Management Server performs the necessary configuration of the Security Gateways and security policies to facilitate the inspection and
+routing of traffic.</p>
+</div>
+<div class="paragraph">
+<p>During scale-in events, in which existing Security Gateway instances are terminated as a result of a decrease in current load, the Management Server cleans up any settings that were created when the Security Gateways were launched.</p>
+</div>
+<div class="paragraph">
+<p>For more information about scale-out and scale-in, see <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk112575#Background">Check Point’s CloudGuard Auto Scaling</a> in AWS documentation.</p>
+</div>
+<div class="paragraph">
+<p>If you have chosen to deploy a Check Point Security Management Server by accepting the default setting of the <strong>Deploy Management Server</strong> parameter, it is deployed and configured to automatically provision the Security Gateways so they will inspect and route traffic to the workload of web servers placed behind them. The IAM policy that will be attached to the Security Management Server’s IAM role will enable it to read Amazon EC2, Elastic Load Balancing, and Auto Scaling properties.</p>
+</div>
+<div class="paragraph">
+<p>If you set the <strong>Deploy Management Server</strong> parameter to <strong>No</strong>, you can either use an existing Management Server or deploy one later.</p>
+</div>
+<div class="paragraph">
+<p>To manually deploy and configure a CloudGuard Security Management Server, either on AWS or on premises, see the section <a href="https://supportcenter.us.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk112575#Installing%20and%20configuring%20the%20Check%20Point%20Security%20Management%20Server">Installing and configuring the Check Point Security Management Server</a> in Check Point’s CloudGuard Auto Scaling for AWS documentation.</p>
+</div>
+<div class="paragraph">
+<p>The CloudFormation stack Outputs tab specifies the tags and values with which the resources were deployed. You may use this information if you are configuring the Auto Provisioning service for the first time.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are configuring the Security Management Server manually, make sure that the values for the management name and the configuration template name in the Management Server configuration match the tags and values of the load balancers and the Auto Scaling group of Security Gateways.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For advanced configuration, such as <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk130372#Enabling%20and%20disabling%20Software%20Blades">enabling and disabling Software Blades</a>, see Check Point’s <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk130372">Security Management Server with CloudGuard for AWS documentation</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_web_servers_workload">Web Servers Workload</h3>
+<div class="paragraph">
+<p>If you have chosen to deploy a workload of web servers by setting the <strong>Deploy Servers parameter</strong> to <strong>Yes</strong>, an internal Application Load Balancer will also be deployed to route traffic to the workload from the Security Gateways. The Auto Scaling settings of the web servers, such as the minimum and maximum group sizes, will match those of the Auto Scaling group of Security Gateways, as specified by the <strong>Minimum Group Size</strong> and <strong>Maximum Group Size</strong> parameters during deployment. These settings can be modified from the <strong>Auto Scaling Groups</strong> tab in the AWS Management Console.</p>
+</div>
+<div class="paragraph">
+<p>The Auto Scaling group of CloudGuard Security Gateways will be automatically provisioned by the Security Management Server so that the Security Gateways will forward the inspected traffic to the internal Application Load Balancer.</p>
+</div>
+<div class="paragraph">
+<p>To protect an existing workload of web servers, see the FAQ section.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1070,6 +1259,96 @@ Unless you&#8217;re customizing the Partner Solution templates or are instructed
 <div class="sectionbody">
 <div class="paragraph">
 <p>For troubleshooting common Partner Solution issues, refer to the <a href="https://fwd.aws/rA69w?" target="_blank" rel="noopener">AWS Partner Solution General Information Guide</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html" target="_blank" rel="noopener">Troubleshooting CloudFormation</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_faq">FAQ</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_how_can_i_use_this_deployment_to_protect_an_existing_workload_of_web_servers">How can I use this deployment to protect an existing workload of web servers?</h3>
+<div class="paragraph">
+<p>You can place an existing workload of web servers, or manually deploy a new workload, behind the CloudGuard Auto Scaling group of Security Gateways. To do so, follow these steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Select <strong>No</strong> for the <strong>Deploy Servers</strong> parameter when launching.</p>
+</li>
+<li>
+<p>Place the web server workload in private subnets.</p>
+</li>
+<li>
+<p>Create an internal load balancer that listens to the internal port, as specified in the CloudFormation stack <strong>Outputs</strong> tab.</p>
+</li>
+<li>
+<p>Attach the load balancer’s target group to the web server workload.</p>
+</li>
+<li>
+<p>Tag the internal load balancer as described in the section <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk112575#Adding%20tags%20to%20your%20Internal%20Elastic%20Load%20Balancer">Adding tags to your Internal Elastic Load Balancer</a> in Check Point’s CloudGuard Auto Scaling for AWS documentation. The values required to complete this step are described in the CloudFormation stack Outputs tab, if you have chosen to deploy a Security Management Server. Otherwise, you can determine these values when you configure the Management Server, as described in the section <a href="https://supportcenter.us.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk112575#Installing%20and%20configuring%20the%20Check%20Point%20Security%20Management%20Server">Installing and configuring the Check Point Security Management Server</a> in Check Point’s <em>CloudGuard Auto Scaling for AWS</em> documentation.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>It is also possible to have the web servers workload deployed in a different AWS account. See the section <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk130372#Connecting%20with%20Additional%20AWS%20accounts">Connecting with Additional AWS accounts</a> in Check Point’s <em>Security Management Server with CloudGuard for AWS</em> documentation.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_do_i_manually_deploy_a_check_point_security_management_server_to_manage_the_cloudguard_security_gateways">How do I manually deploy a Check Point Security Management Server to manage the CloudGuard Security Gateways?</h3>
+<div class="paragraph">
+<p>Choose <strong>No</strong> for the Deploy Management Server parameter during deployment, and follow the steps described in the Check Point Security Management Server section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_do_i_configure_an_existing_check_point_security_management_server_to_manage_the_cloudguard_security_gateways">How do I configure an existing Check Point Security Management Server to manage the CloudGuard Security Gateways?</h3>
+<div class="paragraph">
+<p>Choose <strong>No</strong> for the <strong>Deploy Management Server</strong> parameter during deployment, and follow the steps described in the Check Point Security Management Server section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_do_i_enable_additional_software_blades_or_disable_active_ones">How do I enable additional Software Blades or disable active ones?</h3>
+<div class="paragraph">
+<p>See the section <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk130372#Enabling%20and%20disabling%20Software%20Blades">Enabling and disabling Software Blades</a> in Check Point’s <em>Security
+Management Server with CloudGuard for AWS</em> documentation.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resources">Resources</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>CloudGuard Auto Scaling for AWS <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso" class="bare">https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso</a>
+lutiondetails=&amp;solutionid=sk112575</p>
+</li>
+<li>
+<p>Security Management Server with CloudGuard for AWS <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso" class="bare">https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso</a>
+lutiondetails=&amp;solutionid=sk130372</p>
+</li>
+<li>
+<p>AWS CloudFormation Templates <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso" class="bare">https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewso</a>
+lutiondetails=&amp;solutionid=sk111013</p>
+</li>
+<li>
+<p>Configuration of AWS STS to Delegate Access across two AWS accounts <a href="https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk122074" class="bare">https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&amp;solutionid=sk122074</a></p>
+</li>
+<li>
+<p>Secure Cloud Blueprint: Agile Security Architecture for the Cloud <a href="https://pages.checkpoint.com/secure-cloud-blueprint.html" class="bare">https://pages.checkpoint.com/secure-cloud-blueprint.html</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -1120,9 +1399,9 @@ Unless you&#8217;re customizing the Partner Solution templates or are instructed
 <footer>
     <p class="footer-text">
         <!-- We can use document attributes: -->
-        <!-- Generated with Asciidoctor v2.0.20. -->
+        <!-- Generated with Asciidoctor v2.0.16. -->
         <a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> |
-        &copy; {current-year}, Amazon Web Services, Inc. or its affiliates and Check Point Software Technologies. All rights reserved.
+        &copy; 2024, Amazon Web Services, Inc. or its affiliates and Check Point Software Technologies. All rights reserved.
     </p>
 </footer>
 </body>

@@ -1,3 +1,25 @@
 //Include any predeployment steps here, such as signing up for a Marketplace AMI or making any changes to a partner account. If there are no predeployment steps, leave this file empty.
 
 == Predeployment steps
+
+=== Subscribe to Check Point CloudGuard IaaS
+
+. Log in to AWS Marketplace at https://aws.amazon.com/marketplace.
+. Open the page for one of the following licensing options for Check Point CloudGuard Security Gateway:
+
+* https://aws.amazon.com/marketplace/pp/B07LB3YN9P[CloudGuard IaaS Next-Gen Firewall w. Threat Prevention & SandBlast - BYOL]
+* https://aws.amazon.com/marketplace/pp/B07LB6847X[CloudGuard IaaS Next-Gen Firewall with Threat Prevention - PAYG-NGTP]
+* https://aws.amazon.com/marketplace/pp/B07LB54LFB[CloudGuard IaaS Next-Gen Firewall with Threat Prevention and SandBlast - PAYG-NGTX]
+
+[start=3]
+. Choose *Continue to Subscribe*.
+. Choose *Accept Terms* to confirm your acceptance of the AWS Marketplace license agreement.
+. If you want to deploy a Check Point CloudGuard Security Management Server, open the AWS Marketplace page for one of the following licensing options, and repeat steps 3 and 4:
+
+* https://aws.amazon.com/marketplace/pp/B07KSBV1MM[CloudGuard IaaS Security Management - BYOL]
+* https://aws.amazon.com/marketplace/pp/B07KSBM119[CloudGuard IaaS Security Management for 25 Security Gateways - PAYG-MGMT]
+
+[NOTE]
+====
+If you want to manage more than 25 Security Gateways, either in the Auto Scaling group deployed here or in another environment, select the BYOL option and purchase a license. To purchase BYOL licenses, contact https://www.checkpoint.com/contact-sales/[Check Point Sales].
+====
