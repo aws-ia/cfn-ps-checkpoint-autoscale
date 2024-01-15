@@ -1,3 +1,41 @@
 // Include any postdeployment steps here, such as steps necessary to test that the deployment was successful. If there are no postdeployment steps, leave this file empty.
 
 == Postdeployment steps
+
+=== Test the deployment
+
+To test the deployment, verify that the protected web service is accessible via the external Application or Network Load Balancer DNS address, as specified in the CloudFormation stack *Outputs* tab.
+
+=== Check Point Security Management Server
+
+The CloudGuard Security Gateways are automatically managed by a Check Point Security Management Server that can be deployed either on AWS or on premises.
+
+During scale-out events, in which new Security Gateway instances are launched to meet an increase in current load, the Security Management Server performs the necessary configuration of the Security Gateways and security policies to facilitate the inspection and
+routing of traffic.
+
+During scale-in events, in which existing Security Gateway instances are terminated as a result of a decrease in current load, the Management Server cleans up any settings that were created when the Security Gateways were launched.
+
+For more information about scale-out and scale-in, see https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk112575#Background[Check Point’s CloudGuard Auto Scaling] in AWS documentation.
+
+If you have chosen to deploy a Check Point Security Management Server by accepting the default setting of the *Deploy Management Server* parameter, it is deployed and configured to automatically provision the Security Gateways so they will inspect and route traffic to the workload of web servers placed behind them. The IAM policy that will be attached to the Security Management Server’s IAM role will enable it to read Amazon EC2, Elastic Load Balancing, and Auto Scaling properties.
+
+If you set the *Deploy Management Server* parameter to *No*, you can either use an existing Management Server or deploy one later.
+
+To manually deploy and configure a CloudGuard Security Management Server, either on AWS or on premises, see the section https://supportcenter.us.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk112575#Installing%20and%20configuring%20the%20Check%20Point%20Security%20Management%20Server[Installing and configuring the Check Point Security Management Server] in Check Point’s CloudGuard Auto Scaling for AWS documentation.
+
+The CloudFormation stack Outputs tab specifies the tags and values with which the resources were deployed. You may use this information if you are configuring the Auto Provisioning service for the first time.
+
+[NOTE]
+====
+If you are configuring the Security Management Server manually, make sure that the values for the management name and the configuration template name in the Management Server configuration match the tags and values of the load balancers and the Auto Scaling group of Security Gateways.
+====
+
+For advanced configuration, such as https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk130372#Enabling%20and%20disabling%20Software%20Blades[enabling and disabling Software Blades], see Check Point’s https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk130372[Security Management Server with CloudGuard for AWS documentation].
+
+=== Web Servers Workload
+
+If you have chosen to deploy a workload of web servers by setting the *Deploy Servers parameter* to *Yes*, an internal Application Load Balancer will also be deployed to route traffic to the workload from the Security Gateways. The Auto Scaling settings of the web servers, such as the minimum and maximum group sizes, will match those of the Auto Scaling group of Security Gateways, as specified by the *Minimum Group Size* and *Maximum Group Size* parameters during deployment. These settings can be modified from the *Auto Scaling Groups* tab in the AWS Management Console.
+
+The Auto Scaling group of CloudGuard Security Gateways will be automatically provisioned by the Security Management Server so that the Security Gateways will forward the inspected traffic to the internal Application Load Balancer.
+
+To protect an existing workload of web servers, see the FAQ section.

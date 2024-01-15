@@ -1,3 +1,9 @@
 // Include details about any licenses and how to sign up. Provide links as appropriate.
 
 There is no cost to use this Partner Solution, but you will be billed for any AWS services or resources that this Partner Solution deploys. For more information, refer to the https://fwd.aws/rA69w?[AWS Partner Solution General Information Guide^].
+
+The Check Point CloudGuard Security Gateways, which are launched by the Auto Scaling group, and the optional Check Point CloudGuard Security Management Server, require a license.
+
+Because this deployment uses Amazon Machine Images (AMIs) from AWS Marketplace, you must subscribe to Check Point CloudGuard in AWS Marketplace before you launch. There are two licensing options: Pay As You Go (PAYG) and Bring Your Own License (BYOL). See the predeployment steps deployment section for details and links.
+
+To purchase BYOL licenses, contact https://www.checkpoint.com/contact-sales/[Check Point Sales]. If you already have a BYOL license and you’d like to use it for this deployment, visit the https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk112575#Licensing[Licensing section] of Check Point’s CloudGuard Auto Scaling in AWS documentation.

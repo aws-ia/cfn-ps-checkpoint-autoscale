@@ -1,5 +1,23 @@
-This guide covers the information you need to deploy the {partner-product-name} Partner Solution in the AWS Cloud.
+This reference deployment guide provides step-by-step instructions for deploying a web service secured by an Auto Scaling group of Check Point CloudGuard Security Gateways on the AWS Cloud.
 
-// For advanced information about the product, troubleshooting, or additional functionality, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/operational/index.html[Operational Guide^].
+AWS Auto Scaling monitors your applications and automatically adjusts capacity to maintain steady, predictable performance at the lowest possible cost. For example, a web application might be served by multiple web servers that are deployed across multiple Availability Zones.
 
-// For information about using this Partner Solution for migrations, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/migration/index.html[Migration Guide^].
+This deployment is for users who want to publish an automatically scaled and dynamically secured web service on AWS, defining content-level access policy, monitoring incoming requests to the service, applying intrusion prevention system (IPS) protections for web
+servers, enforcing geo-based policy, preventing malicious bots activity, and more.
+
+The deployment deploys an Auto Scaling group of Check Point CloudGuard Security Gateways in front of a workload of web servers, because a security solution should be as scalable as the setup it is protecting. Additionally, you can select to deploy either an external Application Load Balancer that operates at the application layer, or a Network Load Balancer that operates at the transport layer, to route traffic from the internet to the Security Gateways.
+
+To manage the CloudGuard Security Gateways, you can choose to deploy a preconfigured Check Point CloudGuard Security Management Server, use an existing Security Management Server, or deploy one later.
+
+If you choose to deploy your workload of web servers, this deployment will also include an internal Application Load Balancer, to route traffic from the Security Gateways to your workload. Otherwise, you can use existing internal load balancers, or deploy those later, by
+tagging them in the AWS Management Console.
+
+=== Check Point CloudGuard for AWS
+
+Check Point CloudGuard for AWS extends comprehensive threat prevention security to the AWS Cloud. It protects assets in the cloud from attacks while enabling secure connectivity.
+
+CloudGuard lets you enforce consistent security policies across your entire organization by protecting data between the corporate network and your virtual private cloud (VPC). CloudGuard can also inspect data entering and leaving the private subnet in the VPC to
+prevent attacks and to mitigate data loss or leakage.
+
+Check Point CloudGuard for AWS meets an organization’s cloud security needs with flexible and manageable security options, including Firewall, Intrusion Prevention System (IPS), Application Control, Antivirus, Anti-Bot, URL filtering, Identity Awareness, advanced
+Threat Prevention, and Threat Extraction Software for known threats and zero-day attacks. CloudGuard protects services in the public cloud from the most sophisticated threats and from unauthorized access while preventing application layer denial-of-service attacks.
