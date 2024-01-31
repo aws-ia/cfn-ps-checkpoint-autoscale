@@ -22,6 +22,7 @@ Metadata:
           - ServicePort
           - AdminEmail
           - ResourcesTagName
+          - Shell
       - Label:
           default: Check Point CloudGuard IaaS Security Gateways Auto Scaling Group Configuration
         Parameters:
@@ -31,6 +32,7 @@ Metadata:
           - GatewaysMaxSize
           - GatewayVersion
           - GatewayPasswordHash
+          - GatewayMaintenancePasswordHash
           - GatewaySICKey
           - CloudWatch
       - Label:
@@ -40,6 +42,7 @@ Metadata:
           - ManagementInstanceType
           - ManagementVersion
           - ManagementPasswordHash
+          - ManagementMaintenancePasswordHash
           - ManagementPermissions
           - ManagementPredefinedRole
           - GatewaysPolicy
@@ -86,6 +89,8 @@ Metadata:
         default: Email address
       ResourcesTagName:
         default: Resources prefix tag
+      Shell:
+        default: Admin shell
       GatewaysSubnets:
         default: Gateways subnets
       GatewayInstanceType:
@@ -98,6 +103,8 @@ Metadata:
         default: Gateways version & license
       GatewayPasswordHash:
         default: Gateways Password hash
+      GatewayMaintenancePasswordHash:
+        default: Gateway Maintenance Password hash
       GatewaySICKey:
         default: Gateways SIC key
       CloudWatch:
@@ -110,6 +117,8 @@ Metadata:
         default: Management version & license
       ManagementPasswordHash:
         default: Management password hash
+      ManagementMaintenancePasswordHash:
+        default:  Management Maintenance Password hash
       ManagementPermissions:
         default: IAM role
       ManagementPredefinedRole:
@@ -194,28 +203,25 @@ Parameters:
       - Network Load Balancer
       - Application Load Balancer
   ALBProtocol:
-    Description: The protocol to use on the Application Load Balancer. If Network Load Balancer was selected this section will be ignored.
+    Description: The protocol to use on the Application Load Balancer, external and internal listeners and target groups. If Network Load Balancer was selected this section will be ignored.
     Type: String
     Default: HTTP
     AllowedValues:
       - HTTP
       - HTTPS
   NLBProtocol:
-    Description: The protocol to use on the Network Load Balancer. If Application Load Balancer was selected this section will be ignored.
+    Description: The protocol to use on the Network Load Balancer, external and internal listeners and target groups. If Application Load Balancer was selected this section will be ignored.
     Type: String
     Default: TCP
     AllowedValues:
       - TCP
-      - TLS
-      - UDP
-      - TCP_UDP
   Certificate:
     Description: Amazon Resource Name (ARN) of an HTTPS Certificate, ignored if the selected protocol is HTTP.
     Type: String
     AllowedPattern: '^(arn:[\w+=/,.@-]+:[\w+=/,.@-]+:[\w+=/,.@-]*:[0-9]+:[\w+=,.@-]+(/[\w+=,.@-]+)*)?$'
     ConstraintDescription: 'Must be a valid Amazon Resource Name (ARN), for example: arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012.'
   ServicePort:
-    Description: 'The external Load Balancer listens to this port. Leave this field blank to use default ports: 80 for HTTP and 443 for HTTPS.'
+    Description: 'The external Load Balancer listens to this port. Leave this field blank to use default ports: 80 for TCP, HTTP and 443 for HTTPS.'
     Type: String
     AllowedPattern: '^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])?$'
     ConstraintDescription: Custom service port must be a number between 0 and 65535.
@@ -229,6 +235,15 @@ Parameters:
     Description: The name tag of the resources. (optional)
     Type: String
     Default: ''
+  Shell:
+    Description: Change the admin shell to enable advanced command line configuration. Applies for Security Gateways and Security Management Server if deployed.
+    Type: String
+    Default: /etc/cli.sh
+    AllowedValues:
+      - /etc/cli.sh
+      - /bin/bash
+      - /bin/csh
+      - /bin/tcsh
   GatewaysSubnets:
     Description: Select at least 2 public subnets in the VPC. If you choose to deploy a Security Management Server it will be deployed in the first subnet.
     Type: List<AWS::EC2::Subnet::Id>
@@ -245,61 +260,109 @@ Parameters:
       - c5.2xlarge
       - c5.4xlarge
       - c5.9xlarge
+      - c5.12xlarge
       - c5.18xlarge
+      - c5.24xlarge
       - c5n.large
       - c5n.xlarge
       - c5n.2xlarge
       - c5n.4xlarge
       - c5n.9xlarge
       - c5n.18xlarge
+      - c5d.large
+      - c5d.xlarge
+      - c5d.2xlarge
+      - c5d.4xlarge
+      - c5d.9xlarge
+      - c5d.12xlarge
+      - c5d.18xlarge
+      - c5d.24xlarge
       - m5.large
       - m5.xlarge
       - m5.2xlarge
       - m5.4xlarge
       - m5.8xlarge
       - m5.12xlarge
+      - m5.16xlarge
+      - m5.24xlarge
       - m6i.large
       - m6i.xlarge
       - m6i.2xlarge
       - m6i.4xlarge
+      - m6i.8xlarge
       - m6i.12xlarge
+      - m6i.16xlarge
       - m6i.24xlarge
+      - m6i.32xlarge
       - c6i.large
       - c6i.xlarge
       - c6i.2xlarge
       - c6i.4xlarge
+      - c6i.8xlarge
       - c6i.12xlarge
+      - c6i.16xlarge
       - c6i.24xlarge
+      - c6i.32xlarge
+      - c6in.large
+      - c6in.xlarge
+      - c6in.2xlarge
+      - c6in.4xlarge
+      - c6in.8xlarge
+      - c6in.12xlarge
+      - c6in.16xlarge
+      - c6in.24xlarge
+      - c6in.32xlarge
       - r5.large
       - r5.xlarge
       - r5.2xlarge
       - r5.4xlarge
+      - r5.8xlarge
       - r5.12xlarge
+      - r5.16xlarge
       - r5.24xlarge
       - r5a.large
       - r5a.xlarge
       - r5a.2xlarge
       - r5a.4xlarge
+      - r5a.8xlarge
       - r5a.12xlarge
+      - r5a.16xlarge
       - r5a.24xlarge
       - r5b.large
       - r5b.xlarge
       - r5b.2xlarge
       - r5b.4xlarge
+      - r5b.8xlarge
       - r5b.12xlarge
+      - r5b.16xlarge
       - r5b.24xlarge
       - r5n.large
       - r5n.xlarge
       - r5n.2xlarge
       - r5n.4xlarge
+      - r5n.8xlarge
       - r5n.12xlarge
+      - r5n.16xlarge
       - r5n.24xlarge
+      - r6i.large
+      - r6i.xlarge
+      - r6i.2xlarge
+      - r6i.4xlarge
+      - r6i.8xlarge
+      - r6i.12xlarge
+      - r6i.16xlarge
+      - r6i.24xlarge
+      - r6i.32xlarge
       - m6a.large
       - m6a.xlarge
       - m6a.2xlarge
       - m6a.4xlarge
+      - m6a.8xlarge
       - m6a.12xlarge
+      - m6a.16xlarge
       - m6a.24xlarge
+      - m6a.32xlarge
+      - m6a.48xlarge
     ConstraintDescription: Must be a valid EC2 instance type
   GatewaysMinSize:
     Description: The minimal number of Security Gateways.
@@ -314,7 +377,7 @@ Parameters:
   GatewayVersion:
     Description: The version and license to install on the Security Gateways.
     Type: String
-    Default: R81.10-BYOL
+    Default: R81.20-BYOL
     AllowedValues:
       - R80.40-BYOL
       - R80.40-PAYG-NGTP
@@ -333,6 +396,12 @@ Parameters:
     Type: String
     Default: ''
     AllowedPattern: '^[\$\./a-zA-Z0-9]*$'
+    NoEcho: true
+  GatewayMaintenancePasswordHash:
+    Description: Check Point recommends setting Admin user's password and maintenance-mode password for recovery purposes.  For R81.10 and below the Admin user's password is used also as maintenance-mode password. (use command "openssl passwd -6 PASSWORD" to get the PASSWORD's hash). (optional)
+    Type: String
+    Default: ''
+    AllowedPattern: '[\$\./a-zA-Z0-9]*'
     NoEcho: true
   GatewaySICKey:
     Description: The Secure Internal Communication key creates trusted connections between Check Point components. Choose a random string consisting of at least 8 alphanumeric characters.
@@ -364,67 +433,114 @@ Parameters:
       - c5.2xlarge
       - c5.4xlarge
       - c5.9xlarge
+      - c5.12xlarge
       - c5.18xlarge
+      - c5.24xlarge
       - c5n.large
       - c5n.xlarge
       - c5n.2xlarge
       - c5n.4xlarge
       - c5n.9xlarge
       - c5n.18xlarge
+      - c5d.large
+      - c5d.xlarge
+      - c5d.2xlarge
+      - c5d.4xlarge
+      - c5d.9xlarge
+      - c5d.12xlarge
+      - c5d.18xlarge
+      - c5d.24xlarge
       - m5.large
       - m5.xlarge
       - m5.2xlarge
       - m5.4xlarge
       - m5.8xlarge
       - m5.12xlarge
+      - m5.16xlarge
       - m5.24xlarge
       - m6i.large
       - m6i.xlarge
       - m6i.2xlarge
       - m6i.4xlarge
+      - m6i.8xlarge
       - m6i.12xlarge
+      - m6i.16xlarge
       - m6i.24xlarge
+      - m6i.32xlarge
       - c6i.large
       - c6i.xlarge
       - c6i.2xlarge
       - c6i.4xlarge
+      - c6i.8xlarge
       - c6i.12xlarge
+      - c6i.16xlarge
       - c6i.24xlarge
+      - c6i.32xlarge
+      - c6in.large
+      - c6in.xlarge
+      - c6in.2xlarge
+      - c6in.4xlarge
+      - c6in.8xlarge
+      - c6in.12xlarge
+      - c6in.16xlarge
+      - c6in.24xlarge
+      - c6in.32xlarge
       - r5.large
       - r5.xlarge
       - r5.2xlarge
       - r5.4xlarge
+      - r5.8xlarge
       - r5.12xlarge
+      - r5.16xlarge
       - r5.24xlarge
       - r5a.large
       - r5a.xlarge
       - r5a.2xlarge
       - r5a.4xlarge
+      - r5a.8xlarge
       - r5a.12xlarge
+      - r5a.16xlarge
       - r5a.24xlarge
       - r5b.large
       - r5b.xlarge
       - r5b.2xlarge
       - r5b.4xlarge
+      - r5b.8xlarge
       - r5b.12xlarge
+      - r5b.16xlarge
       - r5b.24xlarge
       - r5n.large
       - r5n.xlarge
       - r5n.2xlarge
       - r5n.4xlarge
+      - r5n.8xlarge
       - r5n.12xlarge
+      - r5n.16xlarge
       - r5n.24xlarge
+      - r6i.large
+      - r6i.xlarge
+      - r6i.2xlarge
+      - r6i.4xlarge
+      - r6i.8xlarge
+      - r6i.12xlarge
+      - r6i.16xlarge
+      - r6i.24xlarge
+      - r6i.32xlarge
       - m6a.large
       - m6a.xlarge
       - m6a.2xlarge
       - m6a.4xlarge
+      - m6a.8xlarge
       - m6a.12xlarge
+      - m6a.16xlarge
       - m6a.24xlarge
+      - m6a.32xlarge
+      - m6a.48xlarge
     ConstraintDescription: Must be a valid EC2 instance type
   ManagementVersion:
     Description: The license to install on the Security Management Server.
     Type: String
-    Default: R81.10-BYOL
+    Default: R81.20-BYOL
     AllowedValues:
       - R81-BYOL
       - R81-PAYG
@@ -437,6 +553,12 @@ Parameters:
     Type: String
     Default: ''
     AllowedPattern: '^[\$\./a-zA-Z0-9]*$'
+    NoEcho: true
+  ManagementMaintenancePasswordHash:
+    Description: Check Point recommends setting Admin user's password and maintenance-mode password for recovery purposes.  For R81.10 and below the Admin user's password is used also as maintenance-mode password. (use command "openssl passwd -6 PASSWORD" to get the PASSWORD's hash). (optional)
+    Type: String
+    Default: ''
+    AllowedPattern: '[\$\./a-zA-Z0-9]*'
     NoEcho: true
   ManagementPermissions:
     Description: IAM role to attach to the instance profile.
@@ -507,11 +629,16 @@ Conditions:
   DeployServers: !Equals [!Ref ServersDeploy, true]
   ALB: !Equals [!Ref LoadBalancersType, Application Load Balancer]
   NLB: !Not [!Condition ALB]
-  EncryptedProtocol: !Or
-    - !And [!Condition ALB, !Equals [ALBProtocol, HTTPS]]
-    - !And [!Condition NLB, !Equals [NLBProtocol, TLS]]
+  EncryptedProtocol: !And [!Condition ALB, !Equals [ALBProtocol, HTTPS]]
   ProvidedPort: !Not [!Equals [!Ref ServicePort, '']]
   ProvidedResourcesTag: !Not [!Equals [!Ref ResourcesTagName, '']]
+  IsGatewayVersionR81AndLower: !Or
+    - !Equals [!Ref GatewayVersion, R80.40-BYOL]
+    - !Equals [!Ref GatewayVersion, R80.40-PAYG-NGTP]
+    - !Equals [!Ref GatewayVersion, R80.40-PAYG-NGTX]
+    - !Equals [!Ref GatewayVersion, R81-BYOL]
+    - !Equals [!Ref GatewayVersion, R81-PAYG-NGTP]
+    - !Equals [!Ref GatewayVersion, R81-PAYG-NGTX]
 Resources:
   ExternalALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -553,8 +680,8 @@ Resources:
       VpcId: !Ref VPC
       Protocol: !If [ALB, !Ref ALBProtocol, !Ref NLBProtocol]
       Port: !If [EncryptedProtocol, 9443, 9080]
-      HealthCheckPort: !If [ NLB, 8117, !Ref 'AWS::NoValue' ]
-      HealthCheckProtocol: !If [ NLB, TCP, !Ref 'AWS::NoValue' ]
+      HealthCheckPort: !If [NLB, !If [IsGatewayVersionR81AndLower, !Ref 'AWS::NoValue', 8117], !Ref 'AWS::NoValue']
+      HealthCheckProtocol: !If [NLB, !If [IsGatewayVersionR81AndLower, !Ref 'AWS::NoValue', TCP], !Ref 'AWS::NoValue']
       Tags:
         - Key: Name
           Value:
@@ -591,9 +718,11 @@ Resources:
         GatewaysMinSize: !Ref GatewaysMinSize
         GatewaysMaxSize: !Ref GatewaysMaxSize
         AdminEmail: !Ref AdminEmail
+        Shell: !Ref Shell
         GatewaysTargetGroups: !Ref ExternalLBTargetGroup
         GatewayVersion: !Ref GatewayVersion
         GatewayPasswordHash: !Ref GatewayPasswordHash
+        GatewayMaintenancePasswordHash: !Ref GatewayMaintenancePasswordHash
         GatewaySICKey: !Ref GatewaySICKey
         AllowUploadDownload: !Ref AllowUploadDownload
         CloudWatch: !Ref CloudWatch
@@ -623,11 +752,13 @@ Resources:
         VolumeSize: !Ref VolumeSize
         VolumeType: !Ref VolumeType
         KeyName: !Ref KeyName
+        Shell: !Ref Shell
         VolumeEncryption: !If [VolumeEncryption, alias/aws/ebs, '']
         EnableInstanceConnect: !Ref EnableInstanceConnect
         TerminationProtection: !Ref TerminationProtection
         ManagementVersion: !Ref ManagementVersion
         ManagementPasswordHash: !Ref ManagementPasswordHash
+        ManagementMaintenancePasswordHash: !Ref ManagementMaintenancePasswordHash
         ManagementPermissions: !Ref ManagementPermissions
         ManagementPredefinedRole: !Ref ManagementPredefinedRole
         AllowUploadDownload: !Ref AllowUploadDownload
