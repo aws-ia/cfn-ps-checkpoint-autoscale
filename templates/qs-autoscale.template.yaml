@@ -781,7 +781,7 @@ Resources:
             - 'template="${tag}-template"'
             - 'echo "Creating CME configuration"'
             - 'autoprov_cfg -f init AWS -mn "${tag}-management" -tn "${template}" -cn "${tag}-controller" -po "${policy}" -otp "${sic}" -r "${region}" -ver "${version}" -iam'
-            - '${blades} && autoprov_cfg -f set template -tn "${template}" -ips -appi -av -ab'
+            - '${blades} && autoprov_cfg -f set template -tn "${template}" -ips -appi -av -ab && autoprov_cfg -f set controller AWS -cn "${tag}-controller" -ct "${template}"'
             - 'echo -e "\nFinished Bootstrap script\n"'
   InternalSecurityGroup:
     Type: AWS::EC2::SecurityGroup
